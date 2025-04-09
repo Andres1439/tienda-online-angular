@@ -17,12 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrl: './formulario.component.css',
 })
 export class FormularioComponent {
-  // Si usamos viewchild...
-  // @ViewChild('descripcionInput') descripcionInput!: ElementRef;
-  // @ViewChild('precioInput') precioInput!: ElementRef;
-  // @Output() nuevoProducto = new EventEmitter<Producto>();
-
-  productoId: number | null = null;
+  llaveProducto: string | null = null;
   descripcionInput: string = '';
   precioInput: number | null = null;
 
@@ -34,13 +29,13 @@ export class FormularioComponent {
 
   ngOnInit() {
     // Verificamos  si debemos cargar un producto ya existenta
-    const id = this.route.snapshot.paramMap.get('id');
+    const llave = this.route.snapshot.paramMap.get('llave');
 
-    if (id) {
-      const producto = this.productoService.getProductoById(Number(id));
+    if (llave) {
+      const producto = this.productoService.getProductoByLlave(llave);
       // Si encontramos el producto, lo cargamos en el formulario
       if (producto) {
-        this.productoId = producto.id;
+        this.llaveProducto = llave;
         this.descripcionInput = producto.descripcion;
         this.precioInput = producto.precio;
       } else {
@@ -48,31 +43,6 @@ export class FormularioComponent {
       }
     }
   }
-
-  // Si usamos viewchild...
-  // agregarProducto(evento: Event) {
-  //   evento.preventDefault(); // Evitar el envío del formulario
-
-  //   if (
-  //     this.descripcionInput.nativeElement.value.trim() === '' ||
-  //     this.precioInput == null ||
-  //     this.precioInput.nativeElement.value <= 0
-  //   ) {
-  //     console.log('Error: Descripción o precio inválido');
-  //     return;
-  //   }
-
-  //   const producto = new Producto(
-  //     this.descripcionInput.nativeElement.value,
-  //     this.precioInput.nativeElement.value
-  //   );
-
-  //   // Emitir el evento del nuevo producto
-  //   this.nuevoProducto.emit(producto);
-
-  //   this.descripcionInput.nativeElement.value = '';
-  //   this.precioInput.nativeElement.value = null;
-  // }
 
   guardarProducto(evento: Event) {
     evento.preventDefault(); // Evitar el envío del formulario
@@ -86,14 +56,10 @@ export class FormularioComponent {
       return;
     }
 
-    const producto = new Producto(
-      this.productoId,
-      this.descripcionInput,
-      this.precioInput
-    );
+    const producto = new Producto(this.descripcionInput, this.precioInput);
 
     // Agregamos el nuevo producto usando el servicio
-    this.productoService.guardarProducto(producto);
+    this.productoService.guardarProducto(producto, this.llaveProducto);
 
     // Limpiamos los comapos de los formularios
     this.limpiarFormulario();
@@ -108,15 +74,15 @@ export class FormularioComponent {
   }
 
   eliminarProducto() {
-    if (this.productoId !== null) {
-      this.productoService.eliminarProducto(this.productoId);
+    if (this.llaveProducto !== null) {
+      this.productoService.eliminarProducto(this.llaveProducto);
       this.limpiarFormulario();
       this.router.navigate(['/']);
     }
   }
 
   limpiarFormulario() {
-    this.productoId = null;
+    this.llaveProducto = null;
     this.descripcionInput = '';
     this.precioInput = null;
   }
