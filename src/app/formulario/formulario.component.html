@@ -1,26 +1,45 @@
-<h4 class="text-center mt-5">Agregar nuevo producto</h4>
+<h4 class="text-center text-success mt-5">Detalle producto</h4>
 <form
-  class="d-flex justify-content-between align-items-center my-4 w-50 mx-auto"
-  (submit)="agregarProducto($event)"
+  class="my-4 w-50 mx-auto"
+  #f="ngForm"
+  (submit)="f.form.valid && guardarProducto($event)"
 >
-  <input
-    type="text"
-    id="description"
-    name="description"
-    placeholder="Descripcion Producto"
-    class="form-control me-2 w-75"
-    autocomplete="off"
-    #descripcionInput
-  />
-  <input
-    type="number"
-    id="precio"
-    name="precio"
-    placeholder="Precio"
-    class="form-control me-2 w-25"
-    autocomplete="off"
-    #precioInput
-  />
+  <div class="d-flex justify-content-between align-items-center">
+    <input
+      type="text"
+      id="descripcion"
+      name="descripcion"
+      placeholder="Descripcion Producto"
+      class="form-control me-2 w-75"
+      autocomplete="off"
+      [(ngModel)]="descripcionInput"
+      required
+    />
+    <input
+      type="number"
+      id="precio"
+      name="precio"
+      placeholder="Precio"
+      class="form-control me-2 w-25"
+      autocomplete="off"
+      [(ngModel)]="precioInput"
+      required
+    />
+  </div>
 
-  <button type="submit" class="btn btn-primary">Agregar</button>
+  <div class="d-flex justify-content-center align-items-center mt-3">
+    <button type="submit" class="btn btn-primary">Guardar Producto</button>
+    @if(productoId !== null) {
+    <button
+      type="submit"
+      class="btn btn-danger mx-3"
+      (click)="eliminarProducto()"
+    >
+      Eliminar Producto
+    </button>
+    }
+    <button type="button" class="btn btn-warning mx-3" (click)="cancelar()">
+      Cancelar
+    </button>
+  </div>
 </form>
